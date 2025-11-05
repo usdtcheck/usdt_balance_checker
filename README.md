@@ -18,11 +18,12 @@
 ### 主界面
 ![374887688-837538085-GUI.png](374887688-837538085-GUI.png)
 
+## 配置文件
+如果自行编译,需要保存项目中的apikey_stats.json文件
+
 ## 安装
 ### 1. 直接下载二进制
 [usdt_balance_checker_1.0](https://github.com/usdtcheck/usdt_balance_checker/releases/tag/usdt_balance_checker_1.0)
-
-https://github.com/usdtcheck/usdt_balance_checker/releases/tag/usdt_balance_checker_1.0
 
 ### 2. 从源码编译
 
