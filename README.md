@@ -42,7 +42,7 @@ go build -o usdt-balance-checker
 
 ### GUI 模式（默认）
 
-直接运行程序，会打开图形界面：
+直接运行程序 或者 双击运行，会打开图形界面：
 
 ```bash
 ./usdt-balance-checker
@@ -89,14 +89,23 @@ go build -o usdt-balance-checker
 ./usdt-balance-checker -cli -input addresses.txt -node-url https://your-node.com/wallet/triggerconstantcontract
 ```
 
-## 输入文件格式
+## 导入key的格式
+每行一个key：
+
+```
+your key1
+your key2
+```
+
+
+## 导入USDT地址的格式
 
 ### TXT 格式
 
 每行一个地址：
 
 ```
-TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t
+TR7NHqjeKaxGTCi8q8Za4pL8otSzgjLj6t
 TXYZabc123...
 TXYZdef456...
 ```
@@ -107,7 +116,7 @@ TXYZdef456...
 
 ```csv
 地址,备注
-TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t,钱包1
+TR7NHqjeKaxGTCi8q8Za4pL8otSzgjLj6t,钱包1
 TXYZabc123...,钱包2
 ```
 
@@ -136,7 +145,7 @@ TXYZabc123...,钱包2
 
 ### 合约信息
 
-- **USDT 合约地址**: `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`
+- **USDT 合约地址**: `TR7NHqjeKaxGTCi8q8Za4pL8otSzgjLj6t`
 - **函数**: `balanceOf(address)`
 - **小数位数**: 6 位
 
