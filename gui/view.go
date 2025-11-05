@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"usdt-balance-checker/resource"
 
 	"usdt-balance-checker/core"
 
@@ -39,6 +40,16 @@ var (
 // ShowMainWindow 显示主窗口
 func ShowMainWindow(a fyne.App) {
 	w := a.NewWindow("USDT 余额查询工具")
+
+	// 加载logo.png文件
+	logoFile := resource.ReadResourceFile("logo.png")
+
+	// 创建一个静态资源来存储logo
+	logoResource := fyne.NewStaticResource("logo", logoFile)
+
+	// 设置窗口的图标
+	w.SetIcon(logoResource)
+
 	w.Resize(fyne.NewSize(1200, 700)) // 增大窗口尺寸，提供更好的显示空间
 	w.CenterOnScreen()
 
@@ -1293,10 +1304,10 @@ func ShowMainWindow(a fyne.App) {
 	// 使用Border布局，将分页和导出固定在底部
 	resultContainer := container.NewBorder(
 		container.NewVBox(filterContainer, headerContainer), // Top: 筛选和表头
-		bottomControls,                   // Bottom: 分页和导出（固定在最底部）
-		nil,                              // Left: 无
-		nil,                              // Right: 无
-		container.NewScroll(resultTable), // Center: 表格（可扩展）
+		bottomControls,                                      // Bottom: 分页和导出（固定在最底部）
+		nil,                                                 // Left: 无
+		nil,                                                 // Right: 无
+		container.NewScroll(resultTable),                    // Center: 表格（可扩展）
 	)
 
 	split := container.NewHSplit(configContainer, resultContainer)
