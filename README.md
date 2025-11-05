@@ -43,10 +43,10 @@ go build
 
 ### GUI 模式（默认）
 
-直接运行程序 或者 双击运行，会打开图形界面：
+命令行运行程序 或者 双击运行打开图形界面：
 
 ```bash
-./usdt-balance-checker
+./usdt-balance-checker.exe
 ```
 
 **GUI 使用步骤：**
@@ -186,5 +186,6 @@ TXYZabc123...,钱包2
 - 支持 GUI 和 CLI 模式
 - 支持批量查询和文件导入导出
 - 实现限流和重试机制
+
 
 
