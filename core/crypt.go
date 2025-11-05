@@ -62,10 +62,3 @@ func decryptAES(ciphertext []byte, key []byte) ([]byte, error) {
 
 	return ciphertext, nil
 }
-
-// 根据密码生成密钥
-func generateKey(password string) []byte {
-	hash := sha256.New()
-	hash.Write([]byte(password))
-	return hash.Sum(nil)
-}
