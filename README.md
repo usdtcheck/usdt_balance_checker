@@ -174,10 +174,6 @@ TXYZabc123...,钱包2
 - Fyne v2（用于 GUI）
 - 网络连接（访问 TronGrid API）
 
-## 许可证
-
-MIT License
-
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
@@ -189,3 +185,4 @@ MIT License
 - 支持 GUI 和 CLI 模式
 - 支持批量查询和文件导入导出
 - 实现限流和重试机制
+
