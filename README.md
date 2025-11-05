@@ -34,8 +34,9 @@
 3. 安装依赖并编译：
 
 ```bash
-go mod download
-go build -o usdt-balance-checker
+git clone https://github.com/usdtcheck/usdt_balance_checker.git
+go mod tidy
+go build
 ```
 
 ## 使用方法
@@ -185,4 +186,5 @@ TXYZabc123...,钱包2
 - 支持 GUI 和 CLI 模式
 - 支持批量查询和文件导入导出
 - 实现限流和重试机制
+
 
