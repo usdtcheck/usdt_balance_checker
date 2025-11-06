@@ -1,4 +1,5 @@
-# USDT 余额查询工具
+# 💰 USDT 余额查询工具
+[🌍 English Version](README_en.md)
 
 一个用于批量查询 TRON 网络上 USDT (TRC-20) 余额的桌面工具，支持 GUI 和 CLI 两种模式。
 
@@ -186,6 +187,7 @@ TXYZabc123...,钱包2
 - 支持 GUI 和 CLI 模式
 - 支持批量查询和文件导入导出
 - 实现限流和重试机制
+
 
 
 
