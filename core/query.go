@@ -195,7 +195,6 @@ func (qm *QueryManager) QueryAddresses(addresses []string, progressCallback func
 			select {
 			case <-qm.ctx.Done():
 				// 取消了，停止发送新任务
-				// fmt.Printf("[QUERY] 检测到取消信号，已发送 %d/%d 个任务\n", i, len(addresses))
 				return
 			case jobs <- i:
 				// 成功发送任务

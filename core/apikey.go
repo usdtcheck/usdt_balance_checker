@@ -3,6 +3,7 @@ package core
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -50,7 +51,7 @@ func NewAPIKeyManager() *APIKeyManager {
 func (m *APIKeyManager) LoadKeysFromFile(filepath string) error {
 	file, err := os.Open(filepath)
 	if err != nil {
-		return fmt.Errorf("打开文件失败: %v", err)
+		return errors.New("打开文件失败")
 	}
 	defer file.Close()
 
@@ -79,11 +80,11 @@ func (m *APIKeyManager) LoadKeysFromFile(filepath string) error {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("读取文件失败: %v", err)
+		return errors.New("读取文件失败")
 	}
 
 	if len(keys) == 0 {
-		return fmt.Errorf("文件中没有找到有效的 API Key")
+		return errors.New("文件中没有找到有效的 API Key")
 	}
 
 	m.mu.Lock()
@@ -124,7 +125,7 @@ func (m *APIKeyManager) RemoveKey(keyToRemove string) error {
 	}
 
 	if !found {
-		return fmt.Errorf("未找到指定的 API Key")
+		return errors.New("未找到指定的 API Key")
 	}
 
 	m.keys = newKeys
@@ -178,7 +179,7 @@ func (m *APIKeyManager) GetNextKey() (string, error) {
 	defer m.mu.Unlock()
 
 	if len(m.keys) == 0 {
-		return "", fmt.Errorf("没有可用的 API Key")
+		return "", errors.New("没有可用的 API Key")
 	}
 
 	// 如果只有一个Key，直接使用这个Key
@@ -199,7 +200,7 @@ func (m *APIKeyManager) GetNextKey() (string, error) {
 
 			return key, nil
 		}
-		return "", fmt.Errorf("API Key 已达到使用上限")
+		return "", errors.New("API Key 已达到使用上限")
 	}
 
 	// 多个Key时，轮询使用
@@ -237,7 +238,7 @@ func (m *APIKeyManager) GetNextKey() (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("所有 API Key 都已达到使用上限")
+	return "", errors.New("所有 API Key 都已达到使用上限")
 }
 
 // GetKeyStatus 获取所有 Key 的状态信息
@@ -381,14 +382,14 @@ func (m *APIKeyManager) saveStats() error {
 	// 创建或覆盖文件
 	file, err := os.Create(statsPath)
 	if err != nil {
-		return fmt.Errorf("创建统计文件失败: %v", err)
+		return errors.New("创建统计文件失败")
 	}
 	defer file.Close()
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(stats); err != nil {
-		return fmt.Errorf("保存统计文件失败: %v", err)
+		return errors.New("保存统计文件失败")
 	}
 
 	return nil

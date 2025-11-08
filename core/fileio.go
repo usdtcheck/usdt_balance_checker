@@ -3,12 +3,14 @@ package core
 import (
 	"bufio"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 
 	"usdt-balance-checker/tron"
 
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -16,7 +18,7 @@ import (
 func LoadAddressesFromFile(filepath string) ([]string, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
-		return nil, fmt.Errorf("打开文件失败: %v", err)
+		return nil, errors.New("打开文件失败: %v")
 	}
 	defer file.Close()
 
@@ -31,7 +33,7 @@ func LoadAddressesFromFile(filepath string) ([]string, error) {
 		reader := csv.NewReader(file)
 		records, err := reader.ReadAll()
 		if err != nil {
-			return nil, fmt.Errorf("读取 CSV 失败: %v", err)
+			return nil, errors.New("读取 CSV 失败: %v")
 		}
 
 		for _, record := range records {
@@ -77,12 +79,12 @@ func LoadAddressesFromFile(filepath string) ([]string, error) {
 		}
 
 		if err := scanner.Err(); err != nil {
-			return nil, fmt.Errorf("读取文件失败: %v", err)
+			return nil, errors.New("读取文件失败: %v")
 		}
 	}
 
 	if len(addresses) == 0 {
-		return nil, fmt.Errorf("文件中没有找到有效的 TRON 地址。\nTRON 地址应该是 34 个字符，以 T 开头，并且通过校验码验证")
+		return nil, errors.New("文件中没有找到有效的 TRON 地址。\nTRON 地址应该是 34 个字符，以 T 开头，并且通过校验码验证")
 	}
 
 	return addresses, nil
@@ -130,7 +132,7 @@ func LoadAddressesFromText(text string) ([]string, error) {
 	}
 
 	if len(addresses) == 0 {
-		return nil, fmt.Errorf("没有找到有效的 TRON 地址。\nTRON 地址应该是 34 个字符，以 T 开头。\n如果地址格式正确但仍报错，可能是校验码错误（地址本身无效）")
+		return nil, errors.New("没有找到有效的 TRON 地址。\nTRON 地址应该是 34 个字符，以 T 开头。\n如果地址格式正确但仍报错，可能是校验码错误（地址本身无效）")
 	}
 
 	return addresses, nil
@@ -140,7 +142,7 @@ func LoadAddressesFromText(text string) ([]string, error) {
 func ExportToCSV(results []QueryResult, filepath string) error {
 	file, err := os.Create(filepath)
 	if err != nil {
-		return fmt.Errorf("创建文件失败: %v", err)
+		return errors.New("创建文件失败: %v")
 	}
 	defer file.Close()
 
@@ -149,7 +151,7 @@ func ExportToCSV(results []QueryResult, filepath string) error {
 
 	// 写入表头
 	if err := writer.Write([]string{"地址", "余额", "状态", "错误信息"}); err != nil {
-		return fmt.Errorf("写入表头失败: %v", err)
+		return errors.New("写入表头失败: %v")
 	}
 
 	// 写入数据
@@ -174,7 +176,7 @@ func ExportToCSV(results []QueryResult, filepath string) error {
 		}
 
 		if err := writer.Write(record); err != nil {
-			return fmt.Errorf("写入数据失败: %v", err)
+			return errors.New("写入数据失败: %v")
 		}
 	}
 
@@ -186,7 +188,7 @@ func ExportToExcel(results []QueryResult, filepath string) error {
 	f := excelize.NewFile()
 	defer func() {
 		if err := f.Close(); err != nil {
-			fmt.Printf("关闭文件失败: %v\n", err)
+			log.Error("关闭文件失败: %v\n", err)
 		}
 	}()
 
@@ -240,7 +242,7 @@ func ExportToExcel(results []QueryResult, filepath string) error {
 
 	// 保存文件
 	if err := f.SaveAs(filepath); err != nil {
-		return fmt.Errorf("保存文件失败: %v", err)
+		return errors.New("保存文件失败: %v")
 	}
 
 	return nil
