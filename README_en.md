@@ -21,7 +21,9 @@ A desktop tool for **batch checking USDT (TRC-20)** balances on the **TRON netwo
 ---
 
 ### 🖥️ Main Interface
-![GUI](374887688-837538085-GUI.png)
+![374887688-837538085-GUI.png](image.png)
+
+![374887688-837538085-GUI.png](image1.png)
 
 ---
 
