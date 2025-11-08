@@ -23,8 +23,6 @@ A desktop tool for **batch checking USDT (TRC-20)** balances on the **TRON netwo
 ### 🖥️ Main Interface
 ![374887688-837538085-GUI.png](image.png)
 
-![374887688-837538085-GUI.png](image1.png)
-
 ---
 
 ## ⚙️ Configuration File
@@ -179,6 +177,9 @@ The program automatically converts TRON Base58 addresses into 32-byte ABI-encode
 5. API Key recommended for higher request limits  
 
 ---
+
+## Question 
+1. How to handle pop-up windows in Go's GUI?
 
 ## 🧑‍💻 Development Requirements
 
