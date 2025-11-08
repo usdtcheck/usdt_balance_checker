@@ -3,7 +3,7 @@ package tron
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
+	"errors"
 
 	"github.com/btcsuite/btcutil/base58"
 )
@@ -13,7 +13,7 @@ func AddressToParameter(address string) (string, error) {
 	// 解码 Base58 地址
 	decoded := base58.Decode(address)
 	if len(decoded) < 21 {
-		return "", fmt.Errorf("无效的 TRON 地址")
+		return "", errors.New("无效的 TRON 地址")
 	}
 
 	// TRON 地址结构：1字节版本(41) + 20字节地址主体 + 4字节校验码
@@ -58,7 +58,7 @@ func ValidateAddress(address string) bool {
 func ValidateAddressWithError(address string) error {
 	decoded := base58.Decode(address)
 	if len(decoded) != 25 {
-		return fmt.Errorf("地址长度不正确")
+		return errors.New("地址长度不正确")
 	}
 
 	addrBytes := decoded[:21]
@@ -70,7 +70,7 @@ func ValidateAddressWithError(address string) error {
 
 	for i := 0; i < 4; i++ {
 		if checkSum[i] != secondHash[i] {
-			return fmt.Errorf("地址校验码错误")
+			return errors.New("地址校验码错误")
 		}
 	}
 
@@ -81,7 +81,7 @@ func ValidateAddressWithError(address string) error {
 func AddressToHex(address string) (string, error) {
 	decoded := base58.Decode(address)
 	if len(decoded) < 21 {
-		return "", fmt.Errorf("无效的 TRON 地址")
+		return "", errors.New("无效的 TRON 地址")
 	}
 
 	// TRON 地址在 triggerconstantcontract 中应该使用21字节（包含版本字节41）

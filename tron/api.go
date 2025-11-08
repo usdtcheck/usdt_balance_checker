@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math/big"
@@ -70,7 +71,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	// 转换地址为参数格式（使用20字节地址主体）
 	param, err := AddressToParameter(address)
 	if err != nil {
-		return "", fmt.Errorf("地址转换失败: %v", err)
+		return "", errors.New("地址转换失败: %v")
 	}
 
 	// 构建请求
@@ -86,13 +87,13 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 
 	jsonData, err := json.Marshal(reqBody)
 	if err != nil {
-		return "", fmt.Errorf("请求序列化失败: %v", err)
+		return "", errors.New("请求序列化失败: %v")
 	}
 
 	// 创建 HTTP 请求（使用 context 支持取消）
 	req, err := http.NewRequestWithContext(ctx, "POST", c.BaseURL, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", fmt.Errorf("创建请求失败: %v", err)
+		return "", errors.New("创建请求失败: %v")
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -109,7 +110,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	for i := 0; i < maxRetries; i++ {
 		// 检查 context 是否已取消
 		if req.Context().Err() != nil {
-			return "", fmt.Errorf("请求已取消")
+			return "", errors.New("请求已取消")
 		}
 		resp, lastErr = c.HTTPClient.Do(req)
 		if lastErr == nil && resp.StatusCode == http.StatusOK {
@@ -138,19 +139,19 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	}
 
 	if lastErr != nil {
-		return "", fmt.Errorf("请求失败: %v", lastErr)
+		return "", errors.New("请求失败: %v")
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("API 返回错误 (HTTP %d): %s", resp.StatusCode, string(body))
+		_, _ = io.ReadAll(resp.Body)
+		return "", errors.New("API 返回错误 (HTTP %d): %s")
 	}
 
 	// 读取响应体
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", fmt.Errorf("读取响应失败: %v", err)
+		return "", errors.New("读取响应失败: %v")
 	}
 
 	// 解析响应（按照 test.go 的方法）
@@ -167,7 +168,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	}
 
 	if err := json.Unmarshal(body, &apiResp); err != nil {
-		return "", fmt.Errorf("解析响应失败: %v, 响应内容: %s", err, string(body))
+		return "", errors.New("解析响应失败: %v, 响应内容: %s")
 	}
 
 	// 检查顶层错误（某些 API 错误可能在这里）
@@ -176,7 +177,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 		if desc == "" {
 			desc = apiResp.Error
 		}
-		return "", fmt.Errorf("API 错误: %s (完整响应: %s)", desc, string(body))
+		return "", errors.New("API 错误: %s (完整响应: %s)")
 	}
 
 	// 检查结果
@@ -188,7 +189,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 		if errorMsg == "" {
 			errorMsg = "未知错误"
 		}
-		return "", fmt.Errorf("查询失败: result=false, code=%s, 完整响应: %s", errorMsg, string(body))
+		return "", errors.New("查询失败: result=false, code=%s, 完整响应: %s")
 	}
 
 	// 获取 constant_result（可能在 result 下，也可能在顶层）
@@ -196,7 +197,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	if len(apiResp.ConstantResult) > 0 {
 		constantResults = apiResp.ConstantResult
 	} else {
-		return "", fmt.Errorf("查询失败: 响应中没有 constant_result (完整响应: %s)", string(body))
+		return "", errors.New("查询失败: 响应中没有 constant_result (完整响应: %s)")
 	}
 
 	// 解析余额（hex 转 decimal）
@@ -211,7 +212,7 @@ func (c *APIClient) QueryBalanceWithContext(ctx context.Context, address string)
 	// 解析余额（按照 test.go 的方法：直接使用 hex 字符串，不 trim 前导零）
 	n := new(big.Int)
 	if _, ok := n.SetString(balanceHex, 16); !ok {
-		return "", fmt.Errorf("无法解析hex余额: %s", balanceHex)
+		return "", errors.New("无法解析hex余额: %s")
 	}
 
 	// 格式化小数（按照 test.go 的方法）
